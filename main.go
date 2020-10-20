@@ -13,37 +13,37 @@ import (
 )
 
 type Conf struct {
-	Token 			string
-	MapDataUrl 		string
-	CovidInfoUrl 	string
+	Token        string
+	MapDataUrl   string
+	CovidInfoUrl string
 }
 
 type Region struct {
-	Id    			string 		`json:"id"`
-	Title 			string 		`json:"title"`
+	Id    string `json:"id"`
+	Title string `json:"title"`
 }
 
 type MapData struct {
-	Items   		[]Items		 `json:"Items"`
+	Items []Items `json:"Items"`
 }
 
 type Items struct {
-	Confirmed    	int64 		`json:"Confirmed"`
-	Deaths 			int64 		`json:"Deaths"`
-	IsoCode 		string 		`json:"IsoCode"`
-	Lat 			string 		`json:"Lat"`
-	Lng 			string 		`json:"Lng"`
-	LocationName 	string 		`json:"LocationName"`
-	New 			string 		`json:"New"`
-	Observations 	string 		`json:"Observations"`
-	Recovered 		int64 		`json:"Recovered"`
+	Confirmed    int64  `json:"Confirmed"`
+	Deaths       int64  `json:"Deaths"`
+	IsoCode      string `json:"IsoCode"`
+	Lat          string `json:"Lat"`
+	Lng          string `json:"Lng"`
+	LocationName string `json:"LocationName"`
+	New          string `json:"New"`
+	Observations string `json:"Observations"`
+	Recovered    int64  `json:"Recovered"`
 }
 
 type CovidInfo struct {
-	Date   			string 		`json:"date"`
-	Sick   			int64 		`json:"sick,string"`
-	Healed 			int64 		`json:"healed,string"`
-	Died   			int64 		`json:"died,string"`
+	Date   string `json:"date"`
+	Sick   int64  `json:"sick,string"`
+	Healed int64  `json:"healed,string"`
+	Died   int64  `json:"died,string"`
 }
 
 var conf Conf
@@ -106,28 +106,28 @@ func genReply(message string) string {
 		"\t/troll - Постебать Айфонодрочеров")
 
 	switch message {
-		case "mos" :
-			reply = getCovidInfoString("RU-MOS")
-		case "mow" :
-			reply = getCovidInfoString("RU-MOW")
-		case "yar" :
-			reply = getCovidInfoString("RU-YAR")
-		case "kda" :
-			reply = getCovidInfoString("RU-KDA")
-		case "spb" :
-			reply = getCovidInfoString("RU-SPE")
-		case "lenobl" :
-			reply = getCovidInfoString("RU-LEN")
-		case "rus" :
-			reply = allRussia()
-		case "rusyar" :
-			reply = fmt.Sprintf("%s\n%s", allRussia(),  getCovidInfoString("RU-YAR"))
-		case "help"  :
-			reply = help
-		case "start" :
-			reply = help
-		case "troll" :
-			reply = "iPhone - говно, Android - сила. "
+	case "mos":
+		reply = getCovidInfoString("RU-MOS")
+	case "mow":
+		reply = getCovidInfoString("RU-MOW")
+	case "yar":
+		reply = getCovidInfoString("RU-YAR")
+	case "kda":
+		reply = getCovidInfoString("RU-KDA")
+	case "spb":
+		reply = getCovidInfoString("RU-SPE")
+	case "lenobl":
+		reply = getCovidInfoString("RU-LEN")
+	case "rus":
+		reply = allRussia()
+	case "rusyar":
+		reply = fmt.Sprintf("%s\n%s", allRussia(), getCovidInfoString("RU-YAR"))
+	case "help":
+		reply = help
+	case "start":
+		reply = help
+	case "troll":
+		reply = "iPhone - говно, Android - сила. "
 	}
 
 	return reply
@@ -183,9 +183,9 @@ func getCovidInfoString(region string) string {
 		result = fmt.Sprintf("%s\n \tДата: %s\n \tУмерло: %s (+%s)\n \tВыявлено: %s (+%s)\n \tВыздоровело: %s (+%s)\n",
 			title,
 			todayInfo.Date,
-			humanize.Comma(todayInfo.Died),   humanize.Comma(todayInfo.Died - yesterdayInfo.Died),
-			humanize.Comma(todayInfo.Sick),   humanize.Comma(todayInfo.Sick-yesterdayInfo.Sick),
-			humanize.Comma(todayInfo.Healed), humanize.Comma(todayInfo.Healed - yesterdayInfo.Healed))
+			humanize.Comma(todayInfo.Died), humanize.Comma(todayInfo.Died-yesterdayInfo.Died),
+			humanize.Comma(todayInfo.Sick), humanize.Comma(todayInfo.Sick-yesterdayInfo.Sick),
+			humanize.Comma(todayInfo.Healed), humanize.Comma(todayInfo.Healed-yesterdayInfo.Healed))
 	} else if yesterdayInfo.Date != "" {
 		result = fmt.Sprintf("%s\n \tДата: %s\n \tУмерло: %s\n \tВыявлено: %s\n \tВыздоровело: %s\n",
 			title,
