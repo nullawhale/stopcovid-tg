@@ -46,6 +46,15 @@ type CovidInfo struct {
 	Died   int64  `json:"died,string"`
 }
 
+type Currency struct {
+	Ccy     string `json:"ccy"`
+	BaseCcy string `json:"base_ccy"`
+	Buy     string `json:"buy"`
+	Sale    string `json:"sale"`
+}
+
+type CurrenciesCollection []Currency
+
 var conf Conf
 
 func main() {
@@ -122,6 +131,8 @@ func genReply(message string) string {
 		reply = allRussia()
 	case "rusyar":
 		reply = fmt.Sprintf("%s\n%s", allRussia(), getCovidInfoString("RU-YAR"))
+	case "cur":
+		reply = getCurrencyReply()
 	case "help":
 		reply = help
 	case "start":
@@ -225,4 +236,52 @@ func getMapData() MapData {
 	json.Unmarshal(bodyBytes, &mapData)
 
 	return mapData
+}
+
+func getCurrencyReply() string {
+	curCollection := getCurrenciesCollection()
+	return exchangeRatesToString(curCollection)
+}
+
+func getCurrenciesCollection() *CurrenciesCollection {
+
+	url := "https://api.privatbank.ua/p24api/pubinfo?json&exchange&coursid=5"
+
+	resp, err := http.Get(url)
+
+	if err != nil {
+		panic(err.Error())
+	}
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	currencyData, err := parseCurrencies([]byte(body))
+
+	return currencyData
+}
+
+func parseCurrencies(body []byte) (*CurrenciesCollection, error) {
+	var s = new(CurrenciesCollection)
+	err := json.Unmarshal(body, &s)
+	if err != nil {
+		fmt.Println("whoops:", err)
+	}
+	return s, err
+}
+
+func exchangeRatesToString(currenciesCollection CurrenciesCollection) string {
+	var message string
+
+	for i := 0; i < len(currenciesCollection); i++ {
+		currency := currenciesCollection[i]
+		fmt.Println(currency.Sale)
+		message += currency.Ccy + "\n"
+		message += "- sale " + currency.Sale + " " + currency.BaseCcy + "\n"
+		message += "- buy " + currency.Buy + " " + currency.BaseCcy + "\n"
+	}
+
+	return message
 }
