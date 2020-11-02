@@ -65,7 +65,7 @@ func main() {
 
 	bot, err := tgbotapi.NewBotAPI(conf.Token)
 	if err != nil {
-		log.Panic(err)
+		log.Fatal(err)
 	}
 
 	bot.Debug = true
@@ -165,7 +165,7 @@ func getRegions() []Region {
 	jsonFile, err := os.Open("regions.json")
 	bodyBytes, _ := ioutil.ReadAll(jsonFile)
 	if err != nil {
-		fmt.Println(err)
+		log.Fatal(err)
 	}
 	var regions []Region
 	json.Unmarshal(bodyBytes, &regions)
@@ -212,7 +212,7 @@ func getCovidInfo(region string) []CovidInfo {
 	url := conf.CovidInfoUrl
 	resp, err := http.Get(fmt.Sprintf("%s=%s", url, region))
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 	defer resp.Body.Close()
 	bodyBytes, _ := ioutil.ReadAll(resp.Body)
@@ -227,7 +227,7 @@ func getMapData() MapData {
 	url := conf.MapDataUrl
 	resp, err := http.Get(fmt.Sprintf("%s", url))
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatal(err)
 	}
 	defer resp.Body.Close()
 	bodyBytes, _ := ioutil.ReadAll(resp.Body)
@@ -250,12 +250,12 @@ func getCurrenciesCollection() *CurrenciesCollection {
 	resp, err := http.Get(url)
 
 	if err != nil {
-		panic(err.Error())
+		log.Fatal(err)
 	}
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		panic(err.Error())
+		log.Fatal(err)
 	}
 
 	currencyData, err := parseCurrencies([]byte(body))
@@ -267,7 +267,7 @@ func parseCurrencies(body []byte) (*CurrenciesCollection, error) {
 	var s = new(CurrenciesCollection)
 	err := json.Unmarshal(body, &s)
 	if err != nil {
-		fmt.Println("whoops:", err)
+		log.Fatal(err)
 	}
 	return s, err
 }
@@ -279,8 +279,8 @@ func exchangeRatesToString(currenciesCollection CurrenciesCollection) string {
 		currency := currenciesCollection[i]
 		fmt.Println(currency.Sale)
 		message += currency.Ccy + "\n"
-		message += "- sale " + currency.Sale + " " + currency.BaseCcy + "\n"
-		message += "- buy " + currency.Buy + " " + currency.BaseCcy + "\n"
+		message += "- продажа " + currency.Sale + " " + currency.BaseCcy + "\n"
+		message += "- покупка " + currency.Buy + " " + currency.BaseCcy + "\n"
 	}
 
 	return message
