@@ -240,7 +240,7 @@ func getMapData() MapData {
 
 func getCurrencyReply() string {
 	curCollection := getCurrenciesCollection()
-	return exchangeRatesToString(curCollection)
+	return exchangeRatesToString(*curCollection)
 }
 
 func getCurrenciesCollection() *CurrenciesCollection {
